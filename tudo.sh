@@ -1,13 +1,14 @@
 nice -20 yum update -y
 
-nice -20 yum update -y
-
 rpm -Uvh http://mirror.webtatic.com/yum/el7/epel-release.rpm;
 rpm -Uvh http://mirror.webtatic.com/yum/el7/webtatic-release.rpm;
+wget http://monitor.data2.com.br/centos/mariadb-repository.txt -O /etc/yum.repos.d/mariadb.repo
+wget http://monitor.data2.com.br/centos/yum-nginx.txt -O /etc/yum.repos.d/nginx.repo
 
 nice -20 yum -y remove Maria* maria* mysql*;nice -20 yum -y remove httpd*;nice -20 yum -y remove php*;
 
 yum install openssl openssl-devel;
+nice -20 yum -y install tcpdump;
 nice -20 yum -y install gcc
 nice -20 yum -y install libpcap
 yum install -y wget perl zip unzip ftp;
@@ -30,10 +31,19 @@ yum -y install crontabs
 
 systemctl start nginx;
 systemctl start php-fpm;
-systemctl start mariadb;
+systemctl start mysqld;
 systemctl enable php-fpm;
 systemctl enable nginx;
-systemctl enable mariadb;
-systemctl enable mysql;
+systemctl enable mysqld;
+
+chkconfig nginx on
+chkconfig php-fpm on
+chkconfig vsftpd on
+chkconfig mysqld on
+
+
+mv /etc/sysctl.conf /etc/sysctl-original-data2.conf
+wget 'http://monitor.data2.com.br/centos/sysctcl-agressive.conf' -O /etc/sysctl.conf
+
 
 mysql_secure_installation;
